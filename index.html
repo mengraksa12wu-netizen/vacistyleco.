@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VaciTeam</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&family=Kantumruy+Pro:wght@300;400;700&display=swap');
+
+        :root { 
+            --main-font: 'Inter', 'Kantumruy Pro', sans-serif; 
+            --gold: #c5a059;
+        }
+        
+        body { font-family: var(--main-font); background-color: #fff; color: #111; overflow-x: hidden; }
+
+        .top-bar { background: #000; color: #fff; font-size: 11px; text-transform: uppercase; letter-spacing: 2px; padding: 8px 0; text-align: center; }
+
+        .navbar { transition: all 0.3s; background: rgba(255,255,255,0.98); padding: 15px 0; border-bottom: 1px solid #eee; }
+        .nav-link { font-weight: 500; letter-spacing: 0.5px; font-size: 0.95rem; color: #111 !important; transition: 0.3s; }
+        .nav-link:hover { color: var(--gold) !important; }
+
+        .hero-banner {
+            height: 80vh;
+            background: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.3)), 
+                        url('https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=1500&q=80');
+            background-size: cover; background-position: center;
+            display: flex; align-items: center; justify-content: center; color: white; text-align: center;
+        }
+        .hero-banner h1 { font-size: clamp(3rem, 8vw, 5rem); letter-spacing: -2px; line-height: 0.9; }
+
+        .cat-card { position: relative; height: 500px; overflow: hidden; cursor: pointer; }
+        .cat-card img { width: 100%; height: 100%; object-fit: cover; transition: 1.2s; }
+        .cat-card:hover img { transform: scale(1.1); }
+        .cat-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.2); display: flex; align-items: flex-end; padding: 40px; color: #fff; }
+
+        .product-card { border: none; position: relative; overflow: hidden; margin-bottom: 30px; }
+        .img-container { overflow: hidden; position: relative; background: #f9f9f9; }
+        .product-card img { transition: transform 1.2s cubic-bezier(0.2, 1, 0.3, 1); height: 400px; object-fit: cover; width: 100%; }
+        .product-card:hover img { transform: scale(1.08); }
+        
+        /* កែប្រែបន្តិចឱ្យក្លាយជាប៊ូតុងចុចបាន */
+        .quick-add {
+            position: absolute; bottom: -60px; left: 0; width: 100%; background: #000; color: #fff;
+            text-align: center; padding: 15px; transition: 0.4s; cursor: pointer;
+            text-transform: uppercase; font-size: 0.75rem; font-weight: 700; text-decoration: none;
+            border: none;
+        }
+        .product-card:hover .quick-add { bottom: 0; }
+
+        .filter-pill { border: 1px solid #eee; padding: 10px 25px; font-size: 0.8rem; cursor: pointer; transition: 0.3s; margin: 5px; display: inline-block; text-transform: uppercase; text-decoration: none; color: #111; }
+        .filter-pill.active, .filter-pill:hover { background: #000; color: #fff; border-color: #000; }
+
+        footer { background: #080808; color: #fff; padding: 80px 0 40px; }
+        .footer-link { color: #777; text-decoration: none; display: block; margin-bottom: 10px; font-size: 0.9rem; transition: 0.3s; }
+        .footer-link:hover { color: #fff; padding-left: 5px; }
+
+        /* បន្ថែមសម្រាប់បង្ហាញទំនិញក្នុងកន្ត្រក */
+        .cart-item-img { width: 50px; height: 65px; object-fit: cover; border-radius: 4px; }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <img src="img\422364356_683665660633760_1888793077895731551_n.jpg" width="130" alt="RAKSA STUDIO" onerror="this.src='https://via.placeholder.com/150x50?text=RAKSA+STUDIO'">
+            </a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navContent">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navContent">
+                <ul class="navbar-nav mx-auto mb-2 mb-lg-0 text-center">
+                    <li class="nav-item"><a class="nav-link active" href="index.html">ទំព័រដើម</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">បុរស</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">នារី</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">ទំនាក់ទំនង</a></li>
+                </ul>
+                <div class="d-flex justify-content-center align-items-center">
+                    <a href="#" class="nav-link px-3"><i class="fa-solid fa-magnifying-glass"></i></a>
+                    <a href="#" class="nav-link px-3 position-relative" data-bs-toggle="offcanvas" data-bs-target="#cartDrawer">
+                        <i class="fa-solid fa-cart-shopping"></i>
+                        <span id="cart-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 10px;">0</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero-banner">
+        <div class="container" data-aos="fade-up">
+            <p class="text-uppercase tracking-widest small mb-4 fw-light">
+            <h1 class="fw-bold mb-5">VACI<br>STYLE CO.</h1>
+            <a href="#shop" class="btn btn-outline-light btn-lg rounded-0 px-5 py-3 fs-6 fw-bold">មើលទំនិញទាំងអស់</a>
+        </div>
+    </header>
+
+    <div class="container-fluid px-0">
+        <div class="row g-0">
+            <div class="col-md-6" data-aos="fade-right">
+                <div class="cat-card">
+                    <img src="https://images.unsplash.com/photo-1488161628813-04466f872be2?auto=format&fit=crop&w=800" alt="Men">
+                    <div class="cat-overlay">
+                        <div>
+                            <h2 class="fw-bold">FOR HIM</h2>
+                            <a href="#" class="text-white text-decoration-underline small uppercase">Shop Men</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6" data-aos="fade-left">
+                <div class="cat-card">
+                    <img src="https://t3.ftcdn.net/jpg/03/34/79/68/360_F_334796865_VVTjg49nbLgQPG6rgKDjVqSb5XUhBVsW.jpg" alt="Women">
+                    <div class="cat-overlay">
+                        <div>
+                            <h2 class="fw-bold">FOR HER</h2>
+                            <a href="#" class="text-white text-decoration-underline small uppercase">Shop Women</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container my-5 py-5" id="shop">
+        <div class="text-center mb-5" data-aos="fade-up">
+            <h3 class="fw-bold text-uppercase mb-4">ទំនិញពេញនិយម</h3>
+            <div class="filter-pills">
+    <a href="#" class="filter-pill active" data-filter="all">ទាំងអស់</a>
+    <a href="#" class="filter-pill" data-filter="tshirt">អាវយឺត</a>
+    <a href="#" class="filter-pill" data-filter="pants">អាវធម្មតា</a>
+</div>
+        </div>
+
+        <div class="row g-4">
+    <div class="col-6 col-md-4 col-lg-3 product-item pants" data-aos="fade-up" data-aos-delay="100">
+        <div class="product-card">
+            <div class="img-container">
+                <img src="img\s3386-3390.jpg" alt="Product">
+                <button class="quick-add" 
+                    data-name="Essential White Tee" 
+                    data-price="19.00" 
+                    data-img="img\s3386-3390.jpg"
+                    data-url="detail-white-tee.html">Add to cart</button>
+            </div>
+            <div class="mt-3">
+                <h6 class="mb-1 fw-bold text-uppercase small">អាវយឺត</h6>
+                <p class="text-muted small">$19.00</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-6 col-md-4 col-lg-3 product-item pants" data-aos="fade-up" data-aos-delay="200">
+        <div class="product-card">
+            <div class="img-container">
+                <img src="img\s1225-1229.JPEG" alt="Product">
+                <button class="quick-add" 
+                    data-name="Classic Harrington" 
+                    data-price="19.00" 
+                    data-img="img\s1225-1229.JPEG"
+                    data-url="detail-harrington.html">Add to cart</button>
+            </div>
+            <div class="mt-3">
+                <h6 class="mb-1 fw-bold text-uppercase small">អាវយឺត</h6>
+                <p class="text-muted small">$19.00</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-6 col-md-4 col-lg-3 product-item pants" data-aos="fade-up" data-aos-delay="300">
+        <div class="product-card">
+            <div class="img-container">
+                <img src="img\s3352-3357.jpg" alt="Product">
+                <button class="quick-add" 
+                    data-name="Black Minimalist Tee" 
+                    data-price="19.00" 
+                    data-img="img\s3352-3357.jpg"
+                    data-url="detail-black-tee.html">Add to cart</button>
+            </div>
+            <div class="mt-3">
+                <h6 class="mb-1 fw-bold text-uppercase small">អាវយឺត</h6>
+                <p class="text-muted small">$19.00</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-6 col-md-4 col-lg-3 product-item pants" data-aos="fade-up" data-aos-delay="400">
+        <div class="product-card">
+            <div class="img-container">
+                <img src="img\PS11-15.jpg" alt="Product">
+                <button class="quick-add" 
+                    data-name="Urban Street Hoodie" 
+                    data-price="19.00" 
+                    data-img="img\PS11-15.jpg"
+                    data-url="detail-hoodie.html">Add to cart</button>
+            </div>
+            <div class="mt-3">
+                <h6 class="mb-1 fw-bold text-uppercase small">អាវយឺត</h6>
+                <p class="text-muted small">$19.00</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-6 col-md-4 col-lg-3 product-item pants" data-aos="fade-up">
+        <div class="product-card">
+            <div class="img-container">
+                <img src="img\PS16-20.jpg" alt="Product">
+                <button class="quick-add" 
+                    data-name="Oxford Casual Shirt" 
+                    data-price="19.00" 
+                    data-img="img\PS16-20.jpg"
+                    data-url="detail-oxford.html">Add to cart</button>
+            </div>
+            <div class="mt-3">
+                <h6 class="mb-1 fw-bold text-uppercase small">អាវយឺត</h6>
+                <p class="text-muted small">$19.00</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-6 col-md-4 col-lg-3 product-item tshirt" data-aos="fade-up">
+        <div class="product-card">
+            <div class="img-container">
+                <img src="img\s3486-3490.JPEG" alt="Product">
+                <button class="quick-add" 
+                    data-name="Oxford Casual Shirt" 
+                    data-price="19.00" 
+                    data-img="img\s3486-3490.JPEG"
+                    data-url="detail-oxford.html">Add to cart</button>
+            </div>
+            <div class="mt-3">
+                <h6 class="mb-1 fw-bold text-uppercase small">អាវយឺត</h6>
+                <p class="text-muted small">$19.00</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-6 col-md-4 col-lg-3 product-item tshirt" data-aos="fade-up">
+        <div class="product-card">
+            <div class="img-container">
+                <img src="img\s3321-3325.jpg" alt="Product">
+                <button class="quick-add" 
+                    data-name="Oxford Casual Shirt" 
+                    data-price="19.00" 
+                    data-img="img\s3321-3325.jpg"
+                    data-url="detail-oxford.html">Add to cart</button>
+            </div>
+            <div class="mt-3">
+                <h6 class="mb-1 fw-bold text-uppercase small">អាវយឺត</h6>
+                <p class="text-muted small">$19.00</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-6 col-md-4 col-lg-3 product-item tshirt" data-aos="fade-up">
+        <div class="product-card">
+            <div class="img-container">
+                <img src="img\S3725.JPG" alt="Product">
+                <button class="quick-add" 
+                    data-name="Oxford Casual Shirt" 
+                    data-price="19.00" 
+                    data-img="img\S3725.JPG"
+                    data-url="detail-oxford.html">Add to cart</button>
+            </div>
+            <div class="mt-3">
+                <h6 class="mb-1 fw-bold text-uppercase small">អាវយឺត</h6>
+                <p class="text-muted small">$19.00</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-6 col-md-4 col-lg-3 product-item tshirt" data-aos="fade-up">
+        <div class="product-card">
+            <div class="img-container">
+                <img src="img\s3531-3535.jpg" alt="Product">
+                <button class="quick-add" 
+                    data-name="Oxford Casual Shirt" 
+                    data-price="19.00" 
+                    data-img="img\s3531-3535.jpg"
+                    data-url="detail-oxford.html">Add to cart</button>
+            </div>
+            <div class="mt-3">
+                <h6 class="mb-1 fw-bold text-uppercase small">អាវយឺត</h6>
+                <p class="text-muted small">$19.00</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-6 col-md-4 col-lg-3 product-item tshirt" data-aos="fade-up">
+        <div class="product-card">
+            <div class="img-container">
+                <img src="img\S3719.JPG" alt="Product">
+                <button class="quick-add" 
+                    data-name="Oxford Casual Shirt" 
+                    data-price="19.00" 
+                    data-img="img\S3719.JPG"
+                    data-url="detail-oxford.html">Add to cart</button>
+            </div>
+            <div class="mt-3">
+                <h6 class="mb-1 fw-bold text-uppercase small">អាវយឺត</h6>
+                <p class="text-muted small">$19.00</p>
+            </div>
+        </div>
+    </div>
+
+     <div class="col-6 col-md-4 col-lg-3 product-item tshirt" data-aos="fade-up">
+        <div class="product-card">
+            <div class="img-container">
+                <img src="img\S3833-3836.jpg" alt="Product">
+                <button class="quick-add" 
+                    data-name="Oxford Casual Shirt" 
+                    data-price="19.00" 
+                    data-img="img\S3833-3836.jpg"
+                    data-url="detail-oxford.html">Add to cart</button>
+            </div>
+            <div class="mt-3">
+                <h6 class="mb-1 fw-bold text-uppercase small">អាវយឺត</h6>
+                <p class="text-muted small">$19.00</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-6 col-md-4 col-lg-3​​ product-item tshirt" data-aos="fade-up">
+        <div class="product-card">
+            <div class="img-container">
+                <img src="img\s3341-3345.jpg" alt="Product">
+                <button class="quick-add" 
+                    data-name="Cotton Cardigan" 
+                    data-price="19.00" 
+                    data-img="img\s3341-3345.jpg"
+                    data-url="detail-cardigan.html">Add to cart</button>
+            </div>
+            <div class="mt-3">
+                <h6 class="mb-1 fw-bold text-uppercase small">អាវយឺត</h6>
+                <p class="text-muted small">$19.00</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+            </div>
+    </div>
+
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="cartDrawer">
+        <div class="offcanvas-header border-bottom">
+            <h5 class="fw-bold mb-0">Cart</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body" id="cart-list">
+            </div>
+        <div class="p-3 border-top">
+            <div class="d-flex justify-content-between mb-3">
+                <span class="fw-bold">សរុប៖</span>
+                <span id="cart-total" class="fw-bold text-danger">$0.00</span>
+            </div>
+            <button class="btn btn-dark w-100 rounded-0">payment</button>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container text-center">
+            <p class="text-muted small">© VaciStyle Co.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({ duration: 1000, once: true });
+
+        // --- ផ្នែក JavaScript សម្រាប់ Cart & Detail ---
+        let cart = JSON.parse(localStorage.getItem('RAKSA_STORE_CART')) || [];
+
+        function renderCart() {
+            const list = document.getElementById('cart-list');
+            const countBadge = document.getElementById('cart-count');
+            const totalText = document.getElementById('cart-total');
+            
+            list.innerHTML = "";
+            let total = 0;
+            let count = 0;
+
+            cart.forEach((item, index) => {
+                total += item.price * item.qty;
+                count += item.qty;
+                list.innerHTML += `
+                    <div class="d-flex align-items-center mb-3 border-bottom pb-2">
+                        <img src="${item.img}" class="cart-item-img me-3">
+                        <div class="flex-grow-1">
+                            <h6 class="mb-0 small fw-bold">${item.name}</h6>
+                            <small class="text-muted">$${item.price} x ${item.qty}</small><br>
+                            <a href="${item.url}" class="small text-gold" style="font-size:11px; text-decoration:underline;">មើលលម្អិត</a>
+                        </div>
+                        <button class="btn btn-sm text-danger" onclick="remove(${index})"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                `;
+            });
+
+            countBadge.innerText = count;
+            totalText.innerText = "$" + total.toFixed(2);
+            localStorage.setItem('RAKSA_STORE_CART', JSON.stringify(cart));
+        }
+
+        document.querySelectorAll('.quick-add').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const item = {
+                    name: this.getAttribute('data-name'),
+                    price: parseFloat(this.getAttribute('data-price')),
+                    img: this.getAttribute('data-img'),
+                    url: this.getAttribute('data-url'),
+                    qty: 1
+                };
+
+                const existing = cart.find(i => i.name === item.name);
+                if(existing) {
+                    existing.qty++;
+                } else {
+                    cart.push(item);
+                }
+                renderCart();
+                // បើកផ្ទាំង Cart ភ្លាមៗ
+                new bootstrap.Offcanvas(document.getElementById('cartDrawer')).show();
+            });
+        });
+
+        function remove(index) {
+            cart.splice(index, 1);
+            renderCart();
+        }
+
+        renderCart(); // បង្ហាញទិន្នន័យពេល Load page
+        document.addEventListener('DOMContentLoaded', function() {
+    const filterButtons = document.querySelectorAll('.filter-pill');
+    const productItems = document.querySelectorAll('.product-item');
+
+    filterButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // ១. ដូរពណ៌ប៊ូតុងដែលកំពុងចុច (Active Class)
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+
+            // ២. ចាប់យកប្រភេទដែលចង់ច្រោះ
+            const filterValue = this.getAttribute('data-filter');
+
+            // ៣. លាក់ ឬបង្ហាញផលិតផល
+            productItems.forEach(item => {
+                if (filterValue === 'all') {
+                    item.style.display = 'block'; // បង្ហាញទាំងអស់
+                } else {
+                    if (item.classList.contains(filterValue)) {
+                        item.style.display = 'block'; // បង្ហាញតែរបស់ដែលត្រូវនឹងប្រភេទ
+                    } else {
+                        item.style.display = 'none'; // លាក់របស់ដែលមិនពាក់ព័ន្ធ
+                    }
+                }
+            });
+        });
+    });
+});
+
+document.querySelectorAll('.filter-pill').forEach(button => {
+    button.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        // ១. ប្តូរពណ៌ប៊ូតុង
+        document.querySelectorAll('.filter-pill').forEach(btn => btn.classList.remove('active'));
+        this.classList.add('active');
+
+        // ២. ចាប់យកឈ្មោះក្រុម (all, tshirt, pants...)
+        const filterValue = this.getAttribute('data-filter');
+
+        // ៣. បង្ហាញ ឬលាក់
+        document.querySelectorAll('.product-item').forEach(item => {
+            if (filterValue === 'all' || item.classList.contains(filterValue)) {
+                item.style.display = 'block'; // បង្ហាញ
+            } else {
+                item.style.display = 'none';  // លាក់
+            }
+        });
+    });
+});
+    </script>
+    
+</body>
+</html>
